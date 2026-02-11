@@ -77,16 +77,15 @@ public class EventRepository {
             return null;
         }
         Event event = events.get(0);
-        /*
+        
         LocalDateTime eventDate = event.getEventDate();
-        LocalDateTime now = LocalDateTime.parse("2026-09-11T00:00:00");
+        LocalDateTime now = LocalDateTime.now();
         
         long hoursBetween = Duration.between(now, eventDate).abs().toHours();
 
         if (hoursBetween > 24) {
             return null;
         }
-        */ // Removed time check since it doesn't handle dummy data well
         return event.getId();
     }
 
