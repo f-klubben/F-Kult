@@ -1,9 +1,9 @@
 package dk.fklub.fkult;
 
-import com.p3.fkult.business.services.Authenticator;
-import com.p3.fkult.business.services.UserService;
-import com.p3.fkult.persistence.entities.User;
-import com.p3.fkult.persistence.repository.UserRepository;
+import dk.fklub.fkult.business.services.Authenticator;
+import dk.fklub.fkult.business.services.UserService;
+import dk.fklub.fkult.persistence.entities.User;
+import dk.fklub.fkult.persistence.repository.UserRepository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

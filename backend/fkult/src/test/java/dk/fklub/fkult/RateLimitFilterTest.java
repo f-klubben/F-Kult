@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import com.p3.fkult.presentation.controllers.RateLimitingFilter;
+import dk.fklub.fkult.presentation.controllers.RateLimitingFilter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 

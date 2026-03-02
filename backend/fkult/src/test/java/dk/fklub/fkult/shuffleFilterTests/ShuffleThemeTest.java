@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.p3.fkult.business.services.shuffleFilter.ShuffleFilter;
-import com.p3.fkult.persistence.entities.Theme;
+import dk.fklub.fkult.business.services.shuffleFilter.ShuffleFilter;
+import dk.fklub.fkult.persistence.entities.Theme;
 
 public class ShuffleThemeTest {
     private ShuffleFilter shuffleFilter;

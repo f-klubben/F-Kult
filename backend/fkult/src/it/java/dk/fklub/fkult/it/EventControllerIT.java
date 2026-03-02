@@ -1,8 +1,8 @@
 package dk.fklub.fkult.it;
 
-import com.p3.fkult.business.services.EventService;
-import com.p3.fkult.persistence.entities.Event;
-import com.p3.fkult.presentation.DTOs.EventRequest;
+import dk.fklub.fkult.business.services.EventService;
+import dk.fklub.fkult.persistence.entities.Event;
+import dk.fklub.fkult.presentation.DTOs.EventRequest;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;

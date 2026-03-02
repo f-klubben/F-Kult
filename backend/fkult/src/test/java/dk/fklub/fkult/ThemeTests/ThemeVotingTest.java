@@ -8,13 +8,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.p3.fkult.business.services.ThemeService;
-import com.p3.fkult.business.services.ThemeVotingService;
-import com.p3.fkult.persistence.repository.EventRepository;
-import com.p3.fkult.persistence.repository.MovieRepository;
-import com.p3.fkult.persistence.repository.ThemeMovieRepository;
-import com.p3.fkult.persistence.repository.ThemeRepository;
-import com.p3.fkult.persistence.repository.UserRepository;
+import dk.fklub.fkult.business.services.ThemeService;
+import dk.fklub.fkult.business.services.ThemeVotingService;
+import dk.fklub.fkult.persistence.repository.EventRepository;
+import dk.fklub.fkult.persistence.repository.MovieRepository;
+import dk.fklub.fkult.persistence.repository.ThemeMovieRepository;
+import dk.fklub.fkult.persistence.repository.ThemeRepository;
+import dk.fklub.fkult.persistence.repository.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class ThemeVotingTest {

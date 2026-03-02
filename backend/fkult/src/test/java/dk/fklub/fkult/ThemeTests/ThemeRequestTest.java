@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.p3.fkult.presentation.DTOs.ThemeRequest;
+import dk.fklub.fkult.presentation.DTOs.ThemeRequest;
 
 
 public class ThemeRequestTest {

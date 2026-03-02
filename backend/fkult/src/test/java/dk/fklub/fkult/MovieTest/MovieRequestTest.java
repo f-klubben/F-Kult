@@ -1,6 +1,6 @@
 package dk.fklub.fkult.MovieTest;
 
-import com.p3.fkult.presentation.DTOs.MovieRequest;
+import dk.fklub.fkult.presentation.DTOs.MovieRequest;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;

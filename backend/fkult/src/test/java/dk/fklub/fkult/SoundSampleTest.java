@@ -1,11 +1,11 @@
 package dk.fklub.fkult;
 
-import com.p3.fkult.business.services.SoundSampleService;
-import com.p3.fkult.business.services.UserService;
-import com.p3.fkult.persistence.entities.SoundSample;
-import com.p3.fkult.persistence.entities.User;
-import com.p3.fkult.persistence.repository.SoundSampleRepository;
-import com.p3.fkult.presentation.DTOs.SoundSampleRequest;
+import dk.fklub.fkult.business.services.SoundSampleService;
+import dk.fklub.fkult.business.services.UserService;
+import dk.fklub.fkult.persistence.entities.SoundSample;
+import dk.fklub.fkult.persistence.entities.User;
+import dk.fklub.fkult.persistence.repository.SoundSampleRepository;
+import dk.fklub.fkult.presentation.DTOs.SoundSampleRequest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

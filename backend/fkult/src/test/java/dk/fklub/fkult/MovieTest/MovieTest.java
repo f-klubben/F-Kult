@@ -1,6 +1,6 @@
 package dk.fklub.fkult.MovieTest;
 
-import com.p3.fkult.persistence.entities.Movie;
+import dk.fklub.fkult.persistence.entities.Movie;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

@@ -11,8 +11,8 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.p3.fkult.persistence.entities.Event;
-import com.p3.fkult.persistence.repository.EventRepository;
+import dk.fklub.fkult.persistence.entities.Event;
+import dk.fklub.fkult.persistence.repository.EventRepository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

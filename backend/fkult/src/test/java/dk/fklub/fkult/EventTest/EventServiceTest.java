@@ -1,10 +1,10 @@
 package dk.fklub.fkult.EventTest;
 
-import com.p3.fkult.business.services.EventService;
-import com.p3.fkult.persistence.entities.Event;
-import com.p3.fkult.persistence.entities.Theme;
-import com.p3.fkult.persistence.repository.*;
-import com.p3.fkult.presentation.DTOs.EventRequest;
+import dk.fklub.fkult.business.services.EventService;
+import dk.fklub.fkult.persistence.entities.Event;
+import dk.fklub.fkult.persistence.entities.Theme;
+import dk.fklub.fkult.persistence.repository.*;
+import dk.fklub.fkult.presentation.DTOs.EventRequest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,15 +1,15 @@
 package dk.fklub.fkult.ThemeTests;
 
-import com.p3.fkult.business.services.EventService;
-import com.p3.fkult.business.services.ThemeService;
-import com.p3.fkult.persistence.entities.DrinkingRule;
-import com.p3.fkult.persistence.entities.Movie;
-import com.p3.fkult.persistence.entities.Theme;
-import com.p3.fkult.persistence.entities.ThemeMovie;
-import com.p3.fkult.persistence.repository.*;
-import com.p3.fkult.presentation.DTOs.ThemeRequest;
-import com.p3.fkult.presentation.controllers.UserController;
-import com.p3.fkult.persistence.entities.User;
+import dk.fklub.fkult.business.services.EventService;
+import dk.fklub.fkult.business.services.ThemeService;
+import dk.fklub.fkult.persistence.entities.DrinkingRule;
+import dk.fklub.fkult.persistence.entities.Movie;
+import dk.fklub.fkult.persistence.entities.Theme;
+import dk.fklub.fkult.persistence.entities.ThemeMovie;
+import dk.fklub.fkult.persistence.repository.*;
+import dk.fklub.fkult.presentation.DTOs.ThemeRequest;
+import dk.fklub.fkult.presentation.controllers.UserController;
+import dk.fklub.fkult.persistence.entities.User;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,10 +1,10 @@
 package dk.fklub.fkult;
 
-import com.p3.fkult.business.services.MovieService;
-import com.p3.fkult.persistence.entities.Movie;
-import com.p3.fkult.persistence.repository.MovieRepository;
+import dk.fklub.fkult.business.services.MovieService;
+import dk.fklub.fkult.persistence.entities.Movie;
+import dk.fklub.fkult.persistence.repository.MovieRepository;
 
-import com.p3.fkult.presentation.DTOs.MovieRequest;
+import dk.fklub.fkult.presentation.DTOs.MovieRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

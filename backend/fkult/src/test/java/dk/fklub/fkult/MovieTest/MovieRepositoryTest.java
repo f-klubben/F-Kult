@@ -1,7 +1,7 @@
 package dk.fklub.fkult.MovieTest;
 
-import com.p3.fkult.persistence.repository.MovieRepository;
-import com.p3.fkult.persistence.entities.Movie;
+import dk.fklub.fkult.persistence.repository.MovieRepository;
+import dk.fklub.fkult.persistence.entities.Movie;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;

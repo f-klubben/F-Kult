@@ -1,8 +1,8 @@
 package dk.fklub.fkult.it;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.p3.fkult.persistence.entities.Movie;
-import com.p3.fkult.persistence.repository.MovieRepository;
+import dk.fklub.fkult.persistence.entities.Movie;
+import dk.fklub.fkult.persistence.repository.MovieRepository;
 
 import org.jsoup.Jsoup;
 import org.junit.jupiter.api.Test;

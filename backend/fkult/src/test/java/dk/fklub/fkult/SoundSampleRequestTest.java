@@ -1,6 +1,6 @@
 package dk.fklub.fkult;
 
-import com.p3.fkult.presentation.DTOs.SoundSampleRequest;
+import dk.fklub.fkult.presentation.DTOs.SoundSampleRequest;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;

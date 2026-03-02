@@ -1,8 +1,8 @@
 package dk.fklub.fkult;
 
-import com.p3.fkult.business.services.ImdbMovieImportService;
-import com.p3.fkult.config.ImportSchedular;
-import com.p3.fkult.persistence.repository.MovieRepository;
+import dk.fklub.fkult.business.services.ImdbMovieImportService;
+import dk.fklub.fkult.config.ImportSchedular;
+import dk.fklub.fkult.persistence.repository.MovieRepository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

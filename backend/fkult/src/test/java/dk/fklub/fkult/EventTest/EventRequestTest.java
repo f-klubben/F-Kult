@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import com.p3.fkult.presentation.DTOs.EventRequest;
+import dk.fklub.fkult.presentation.DTOs.EventRequest;
 
 public class EventRequestTest {
     // Tests the main constructor: (id, name, username, timestamp, drinkingRules, tConsts)

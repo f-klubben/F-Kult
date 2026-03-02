@@ -1,7 +1,7 @@
 package dk.fklub.fkult;
 
-import com.p3.fkult.business.services.ImdbMovieImportService;
-import com.p3.fkult.config.ImdbChecker;
+import dk.fklub.fkult.business.services.ImdbMovieImportService;
+import dk.fklub.fkult.config.ImdbChecker;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

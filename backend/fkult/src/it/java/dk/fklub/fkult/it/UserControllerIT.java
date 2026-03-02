@@ -1,9 +1,9 @@
 package dk.fklub.fkult.it;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.p3.fkult.business.services.Authenticator;
-import com.p3.fkult.persistence.entities.User;
-import com.p3.fkult.persistence.repository.UserRepository;
+import dk.fklub.fkult.business.services.Authenticator;
+import dk.fklub.fkult.persistence.entities.User;
+import dk.fklub.fkult.persistence.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

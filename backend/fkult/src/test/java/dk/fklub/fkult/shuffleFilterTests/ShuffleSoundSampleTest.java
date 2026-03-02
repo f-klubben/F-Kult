@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.p3.fkult.business.services.shuffleFilter.ShuffleFilter;
-import com.p3.fkult.persistence.entities.SoundSample;
+import dk.fklub.fkult.business.services.shuffleFilter.ShuffleFilter;
+import dk.fklub.fkult.persistence.entities.SoundSample;
 
 public class ShuffleSoundSampleTest {
     private ShuffleFilter shuffleFilter;
