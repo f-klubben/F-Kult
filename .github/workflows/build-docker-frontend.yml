@@ -1,4 +1,4 @@
-name: Backend container image
+name: Frontend container image
 
 on:
   push:
@@ -8,10 +8,10 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: fkult-backend
+  IMAGE_NAME: fkult-frontend
 
 jobs:
-  build-and-push-backend:
+  build-and-push-frontend:
     runs-on: ubuntu-latest
     permissions:
       contents: read
