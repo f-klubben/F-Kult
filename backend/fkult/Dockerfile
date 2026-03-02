@@ -3,14 +3,12 @@ FROM maven:3.9.6-eclipse-temurin-21 AS build
 
 WORKDIR /app
 
-# Copy Maven wrapper and pom first (better layer caching)
+# Copy Maven wrapper and pom
 COPY mvnw .
+RUN chmod +x mvnw
 COPY .mvn .mvn
 COPY pom.xml .
 
-RUN chmod +x mvnw
-
-# Download dependencies
 RUN ./mvnw dependency:go-offline
 
 # Copy the rest of the backend source
@@ -25,16 +23,15 @@ FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 
-# Copy the built JAR
+# Copy JAR
 COPY --from=build /app/target/*.jar app.jar
 
-# Create directories for SQLite DB and uploads
 RUN mkdir -p /app/database /app/soundSampleUploads
 
 # Expose Spring Boot port
 EXPOSE 8080
 
-# Optional JVM tuning
+# Adjust JVM heap size
 ENV JAVA_OPTS="-Xms512m -Xmx1024m"
 
 # Run the app
