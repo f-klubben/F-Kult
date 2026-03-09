@@ -120,6 +120,15 @@ cd ../backend/fkult
 ./mvnw spring-boot:run
 ```
 
+### Manual Database Setup (Optional)
+If you want to initialize or refresh the movie database manually without starting the backend server, you can run the setup command:
+
+```bash
+# PowerShell (Windows)
+cd backend/fkult
+.\SetupDatabase.bat
+```
+
 ### Running the App for the First Time
 Open **two terminals** from the root `F-Kult`. In the first terminal, start the backend:
 ```bash

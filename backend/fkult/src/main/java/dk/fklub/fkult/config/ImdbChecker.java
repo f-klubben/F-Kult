@@ -11,14 +11,20 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.springframework.context.annotation.Profile;
+
+
 //component which runs secondly on upstart of the program
+@Profile("!setup")
 @Component
-@Order(2) // ensure this runs early
+@Order(2)// ensure this runs early
 public class ImdbChecker implements ApplicationRunner {
+
     private final ImdbMovieImportService importService;
     private final Path localPath;
+    private volatile boolean loading = false;
 
-    //checker function, that checks if "title.basics.tsv.gz" exists by specific path
+     //checker function, that checks if "title.basics.tsv.gz" exists by specific path
     public ImdbChecker(ImdbMovieImportService importService, @Value("${imdb.local-path:database/title.basics.tsv.gz}") String localPathStr) {
         this.importService = importService;
         this.localPath = Paths.get(localPathStr);
@@ -32,8 +38,48 @@ public class ImdbChecker implements ApplicationRunner {
             return;
         }
 
-        System.out.println("[IMDb bootstrap] Dataset missing; downloading & importing…");
-        int n = importService.weeklyRefresh();  // downloads + upserts
-        System.out.println("[IMDb bootstrap] Import complete. rows_processed=" + n);
+        System.out.println("[IMDb bootstrap] Dataset missing; downloading & importing...");
+
+        loading = true;
+        Thread spinner = createSpinner("[IMDb bootstrap] Importing IMDb data... ");
+
+        spinner.start();
+
+        try {
+            int n = importService.weeklyRefresh();
+
+            loading = false;
+            spinner.join();
+
+            System.out.print("\r                                                                                \r");
+            System.out.println("[IMDb bootstrap] Import complete. rows_processed=" + n);
+        } catch (Exception e) {
+            loading = false;
+            spinner.join();
+
+            System.out.print("\r                                                                                \r");
+            System.out.println("[IMDb bootstrap] Import failed.");
+            throw e;
+        }
+    }
+
+    //spinning animation
+    private Thread createSpinner(String message) {
+        return new Thread(() -> {
+            String[] frames = {"|", "/", "-", "\\"};
+            int i = 0;
+
+            while (loading) {
+                System.out.print("\r" + message + frames[i++ % frames.length]);
+                System.out.flush();
+
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+            }
+        });
     }
 }
