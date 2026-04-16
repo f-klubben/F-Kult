@@ -100,7 +100,24 @@ git clone https://github.com/f-klubben/F-Kult.git
 cd F-Kult
 ```
 
-3. Install dependencies and initialize the database
+3. Create frontend environment file
+
+Create a `.env` file in the `frontend/` folder. Copy the contents from `.env.example` and adjust values as needed.
+
+4. Set backend environment variables (OS level)
+
+Set the required environment variables before running the backend e.g.:
+```bash
+# PowerShell (Windows):
+$env:STREGSYSTEM_BASE_URL="https://stregsystem.fklub.dk"
+$env:CORS_ADDRESS="http://localhost:5173"
+
+# Mac/Linux:
+export STREGSYSTEM_BASE_URL="https://stregsystem.fklub.dk"
+export CORS_ADDRESS="http://localhost:5173"
+``` 
+
+5. Install dependencies and initialize the database
 
 The first startup may take 5–10 minutes, since the backend downloads and imports over 1 million movie data.
 The process is complete when the following message appears:

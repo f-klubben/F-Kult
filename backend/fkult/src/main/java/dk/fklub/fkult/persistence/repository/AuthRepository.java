@@ -14,7 +14,7 @@ public class AuthRepository {
     private final RestTemplate http = new RestTemplate();
 
     //connect to "stegsystem" API
-    @Value("${stregsystem.base-url:https://stregsystem.fklub.dk}")
+    @Value("${stregsystem.base-url}")
     private String stregBaseUrl;
 
     public AuthRepository(JdbcTemplate jdbc) {
