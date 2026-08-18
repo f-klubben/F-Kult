@@ -1,0 +1,21 @@
+services:
+  backend:
+    build: ./backend/fkult
+    container_name: fkult-backend
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend/fkult/database:/app/database
+      - ./backend/fkult/soundSampleUploads:/app/soundSampleUploads
+    environment:
+      - JAVA_OPTS=-Xms512m -Xmx1024m
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: fkult-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
