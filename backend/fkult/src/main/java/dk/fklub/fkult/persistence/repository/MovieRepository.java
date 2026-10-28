@@ -103,10 +103,30 @@ private String sanitizeFTS(String input) {
         return jdbcTemplate.queryForObject("SELECT runtime_minutes FROM movie WHERE id = ?", Long.class, id);
     }
 
-    public void updatePosterURL(Long movieId, String posterURL){
-        String sql = "UPDATE movie SET poster_url = ? WHERE id = ?";
+
+    public void updatePosterURL(Long movieId, String posterURL) {
+        String sql = """
+            UPDATE movie
+            SET poster_url = ?,
+                poster_status = 'FOUND',
+                poster_checked_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+            """;
+
         jdbcTemplate.update(sql, posterURL, movieId);
     }
+
+    public void markPosterNotFound(Long movieId) {
+        String sql = """
+            UPDATE movie
+            SET poster_status = 'NOT_FOUND',
+                poster_checked_at = CURRENT_TIMESTAMP
+            WHERE id = ?
+            """;
+
+        jdbcTemplate.update(sql, movieId);
+    }
+
     public List<Movie> searchMovies(String keyword, int page, int limit, String sortBy, String direction, Boolean movie, Boolean series, Boolean shorts, Boolean rated ) {
         // If search is an IMDb tconst then return exact match
         if (keyword != null && keyword.matches("tt\\d{7,8}")) {
@@ -403,6 +423,37 @@ private String sanitizeFTS(String input) {
 
         jdbcTemplate.execute("DROP TABLE IF EXISTS tmp_ratings");
     }
+
+
+
+    public List<Movie> findMoviesMissingPosters(int limit) {
+        String sql = """
+            SELECT *
+            FROM movie
+            WHERE is_active = 1
+            AND tconst IS NOT NULL
+            AND (
+                -- Movies that have never been checked
+                poster_status = 'PENDING'
+
+                -- Retry missing posters after 90 days
+                OR (
+                    poster_status = 'NOT_FOUND'
+                    AND poster_checked_at <= datetime('now', '-90 days')
+                )
+            )
+            ORDER BY
+                CASE
+                    WHEN poster_status = 'PENDING' THEN 0
+                    ELSE 1
+                END,
+                id
+            LIMIT ?
+            """;
+
+        return jdbcTemplate.query(sql, rowMapper, limit);
+    }
+
 
 
 

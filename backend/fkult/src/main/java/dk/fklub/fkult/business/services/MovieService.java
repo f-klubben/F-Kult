@@ -105,7 +105,7 @@ public class MovieService {
         Movie movie = movieRepository.findById(id);
         return getPosterURL(movie);
     }
-
+/*
     public String getPosterURL(Movie movie) {
         if (movie.getTconst() == null) {//if no tConst is given we can't find the movie so return null
             System.out.println("Movie " + movie.getId() + " has no tconst");
@@ -151,7 +151,18 @@ public class MovieService {
             e.printStackTrace();
             return null;
         }
+    }*/
+
+    public String getPosterURL(Movie movie) {
+        if (movie == null) {
+            return null;
+        }
+
+        // Posters are now imported and cached during
+        // the TMDb poster import process.
+        return movie.getPosterURL();
     }
+
     // for testing purposes
     public ResponseEntity<String> exchangeImdb(String url, HttpEntity<String> entity) {
         return restTemplate.exchange(url, HttpMethod.GET, entity, String.class);

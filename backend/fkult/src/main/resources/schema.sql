@@ -21,6 +21,8 @@ CREATE TABLE IF NOT EXISTS movie (
   is_series           INTEGER NOT NULL DEFAULT 0 CHECK (is_series IN (0,1)),
   is_shorts           INTEGER NOT NULL DEFAULT 0 CHECK (is_shorts IN (0,1)),
   poster_url          TEXT,
+  poster_status       TEXT NOT NULL DEFAULT 'PENDING' CHECK (poster_status IN ('PENDING', 'FOUND', 'NOT_FOUND')),
+  poster_checked_at   TEXT,
   rating              TEXT,
   last_seen           DATE DEFAULT NULL
 );
