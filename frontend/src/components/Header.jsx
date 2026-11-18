@@ -8,7 +8,7 @@ import React, {useEffect} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import { useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import {isAdmin} from "../services/adminService.jsx";
+import {getSession, logout as endSession} from "../services/authService.jsx";
 
 export default function Header(){
     // Consts
@@ -40,13 +40,13 @@ export default function Header(){
 
     // Check if the user is admin when loaded, used for dropdown menu
     useEffect(() => {
-        isAdmin(username).then(setAdminBool)
+        getSession().then(session => setAdminBool(session.authenticated && session.admin))
     }, [username]);
 
-    // Function to log out, remove all evidence.
-    const logout = () =>{
-        localStorage.removeItem("rememberUser");
+    // Function to log out: remove all evidence and end the session on the backend.
+    const logout = async () =>{
         sessionStorage.removeItem("username");
+        await endSession();
         navigate("/login");
     };
 

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
-import { render, screen, fireEvent, cleanup } from "@testing-library/react";
+import { render, screen, fireEvent, cleanup, waitFor } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import { I18nextProvider } from "react-i18next";
 import baseI18n from "../i18n";
@@ -157,6 +157,8 @@ describe("HomePage Test + Header Test", () => {
 
     fireEvent.click(logoutBtn);
     expect(sessionStorage.getItem("username")).toBeNull();
-    expect(mockNavigate).toHaveBeenCalledWith("/login");
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith("/login");
+    });
   });
 });

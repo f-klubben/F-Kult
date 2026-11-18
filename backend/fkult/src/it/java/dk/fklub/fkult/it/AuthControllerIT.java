@@ -1,113 +1,123 @@
 package dk.fklub.fkult.it;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * The login endpoints: reading the session, the admin password login (which works
+ * without F-Klub SSO) and logging out.
+ *
+ * The F-Klub SSO login itself needs a real OIDC provider, so it is not covered
+ * here; see FkultOidcUserServiceTest and LoginServiceTest for that logic.
+ */
 @ActiveProfiles("test")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
+        "fkult.admin.username=testadmin",
+        "fkult.admin.password-hash={noop}supersecret"
+})
 class AuthControllerIT {
 
-  static WireMockServer wm;
+    record SessionResponse(boolean authenticated, String username, String name, long userId, boolean admin) {}
 
+    @LocalServerPort int port;
+    @Autowired TestRestTemplate rest;
 
-  //connects to a mock hosts (this also includes a mock stregsystem api)
-  @BeforeAll
-  static void startWireMock() {
-    wm = new WireMockServer(9099);
-    wm.start();
-    configureFor("localhost", 9099);
-  }
+    private String url(String path) {
+        return "http://localhost:" + port + path;
+    }
 
-  //after each tests stops the mock host
-  @AfterAll
-  static void stopWireMock() {
-    if (wm != null) wm.stop();
-  }
+    private ResponseEntity<SessionResponse> adminLogin(String username, String password) {
+        return rest.postForEntity(url("/api/auth/admin-login"),
+                Map.of("username", username, "password", password), SessionResponse.class);
+    }
 
-  @LocalServerPort int port;
-  @Autowired TestRestTemplate rest;
-  @Autowired JdbcTemplate jdbc;
+    private String sessionCookie(ResponseEntity<?> response) {
+        String setCookie = response.getHeaders().getFirst(HttpHeaders.SET_COOKIE);
+        assertThat(setCookie).as("logging in must set a session cookie").isNotNull();
+        return setCookie.split(";")[0];
+    }
 
-  private String url() { return "http://localhost:" + port + "/api/auth/username"; }
+    private ResponseEntity<SessionResponse> getSession(String sessionCookie) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.COOKIE, sessionCookie);
+        return rest.exchange(url("/api/auth/session"), HttpMethod.GET, new HttpEntity<>(headers), SessionResponse.class);
+    }
 
-  private HttpEntity<String> jsonBody(String username) {
-    var headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
-    return new HttpEntity<>("{\"username\":\"" + username + "\"}", headers);
-  }
+    @Test
+    void sessionIsAnonymousBeforeLoggingIn() {
+        ResponseEntity<SessionResponse> response = rest.getForEntity(url("/api/auth/session"), SessionResponse.class);
 
-  //tests if username exists and are not banned
-  @Test
-  void usernameExistsAndNotBanned() {
-    ResponseEntity<String> resp = rest.postForEntity(url(), jsonBody("allowed_user"), String.class); //inserts user name allowed_user which should log in
+        assertThat(response.getStatusCode().value()).isEqualTo(200);
+        assertThat(response.getBody().authenticated()).isFalse();
+    }
 
-    //test user got logged in
-    assertThat(resp.getStatusCode().value()).isEqualTo(200);
-    assertThat(resp.getBody()).isEqualTo("Login successful");
-  }
+    @Test
+    void adminLoginWithAWrongPasswordIsRejected() {
+        ResponseEntity<String> response = rest.postForEntity(url("/api/auth/admin-login"),
+                Map.of("username", "testadmin", "password", "wrong"), String.class);
 
-  //test if user is banned
-  @Test
-  void usernameExistsAndBanned() {
-    ResponseEntity<String> resp = rest.postForEntity(url(), jsonBody("banned_user"), String.class); //insert banned username to check response
+        assertThat(response.getStatusCode().value()).isEqualTo(401);
+        assertThat(response.getBody()).isEqualTo("Wrong username or password");
+    }
 
-    //asserts based on response that user is banned
-    assertThat(resp.getStatusCode().value()).isEqualTo(404);
-    assertThat(resp.getBody()).isEqualTo("Your Banned Bozo!");
-  }
+    @Test
+    void adminLoginStartsASession() {
+        ResponseEntity<SessionResponse> login = adminLogin("testadmin", "supersecret");
 
-  //test if user does not exist in database but in stregsystem api
-  @Test
-  void usernameNotLocalButExistsRemoteIsInserted() {
-    Integer before = jdbc.queryForObject("select count(*) from user where username = ?", Integer.class, "remote_user");
-    assertThat(before).isZero();
+        assertThat(login.getStatusCode().value()).isEqualTo(200);
+        assertThat(login.getBody().authenticated()).isTrue();
+        assertThat(login.getBody().username()).isEqualTo("testadmin");
+        assertThat(login.getBody().admin()).isTrue();
 
-    //promt mock stregsystem to return member id 321 when given value remote_user
-    wm.stubFor(get(urlPathEqualTo("/api/member/get_id"))
-        .withQueryParam("username", equalTo("remote_user"))
-        .willReturn(okJson("{\"member_id\":321}")));
+        ResponseEntity<SessionResponse> session = getSession(sessionCookie(login));
+        assertThat(session.getBody().authenticated()).isTrue();
+        assertThat(session.getBody().admin()).isTrue();
+    }
 
-    // Define all values stregsystem returns when given user id 321
-    wm.stubFor(get(urlPathEqualTo("/api/member"))
-        .withQueryParam("member_id", equalTo("321"))
-        .willReturn(okJson("{\"balance\":0,\"username\":\"remote_user\",\"active\":true,\"name\":\"Remote User\"}")));
+    @Test
+    void browsingDoesNotRequireALogin() {
+        assertThat(rest.getForEntity(url("/api/themes"), String.class).getStatusCode().value()).isEqualTo(200);
+        assertThat(rest.getForEntity(url("/api/event/next"), String.class).getStatusCode().value()).isLessThan(500);
+    }
 
-    ResponseEntity<String> resp = rest.postForEntity(url(), jsonBody("remote_user"), String.class);
+    @Test
+    void adminEndpointsRequireAnAdminSession() {
+        assertThat(rest.getForEntity(url("/api/user"), String.class).getStatusCode().value()).isEqualTo(401);
+    }
 
-    //test that the process is a succes and user is logged in
-    assertThat(resp.getStatusCode().value()).isEqualTo(200);
-    assertThat(resp.getBody()).isEqualTo("Login successful");
+    @Test
+    void adminEndpointsAreOpenWithAnAdminSession() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.COOKIE, sessionCookie(adminLogin("testadmin", "supersecret")));
 
-    // verify user was upserted locally
-    Integer after = jdbc.queryForObject("select count(*) from user where username = ?", Integer.class, "remote_user");
-    assertThat(after).isEqualTo(1);
-  }
+        ResponseEntity<String> response = rest.exchange(url("/api/user"), HttpMethod.GET, new HttpEntity<>(headers), String.class);
 
-  //test user does not exist locally or on stregsystem api
-  @Test
-  void usernameNotLocalAndRemote() {
-    wm.stubFor(get(urlPathEqualTo("/api/member/get_id"))
-        .withQueryParam("username", equalTo("unknown_user"))
-        .willReturn(aResponse().withStatus(400).withBody("{\"error\":\"bad request\"}"))); //promts stregsystem api to return bad request
+        assertThat(response.getStatusCode().value()).isEqualTo(200);
+        assertThat(response.getBody()).contains("test1");
+    }
 
-    ResponseEntity<String> resp = rest.postForEntity(url(), jsonBody("unknown_user"), String.class);
+    @Test
+    void logoutEndsTheSession() {
+        String sessionCookie = sessionCookie(adminLogin("testadmin", "supersecret"));
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.COOKIE, sessionCookie);
 
-    //assert user does not exists
-    assertThat(resp.getStatusCode().value()).isEqualTo(404);
-    assertThat(resp.getBody()).isEqualTo("Username does not exist");
-  }
+        rest.exchange(url("/api/auth/logout"), HttpMethod.POST, new HttpEntity<>(headers), String.class);
+
+        assertThat(getSession(sessionCookie).getBody().authenticated()).isFalse();
+        assertThat(rest.exchange(url("/api/user"), HttpMethod.GET, new HttpEntity<>(headers), String.class)
+                .getStatusCode().value()).isEqualTo(401);
+    }
 }
-
